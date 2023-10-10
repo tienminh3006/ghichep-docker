@@ -4,8 +4,6 @@ mkdir -p apache && cd apache
 cat << EOF > dockerfile
 FROM ubuntu:14.04
 
-MAINTAINER tannt
-
 RUN apt-get update && apt-get install -y apache2 && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV APACHE_RUN_USER www-data
