@@ -1,9 +1,6 @@
-# 21. Đánh giá tài nguyên của Docker container.
+## 21. Đánh giá tài nguyên của Docker container.
 
-____
-____
-
-# <a name="content">Nội dung</a>
+### <a name="content">Nội dung</a>
 
 ![https://nickjanetakis.com/assets/blog/cards/docker-tips-and-tricks-56b5452dc709c8861641d9011d55ed5e6f5138b7d1e76a5e258160077c903076.jpg](https://nickjanetakis.com/assets/blog/cards/docker-tips-and-tricks-56b5452dc709c8861641d9011d55ed5e6f5138b7d1e76a5e258160077c903076.jpg)
 
@@ -13,7 +10,7 @@ ____
 
         docker stats
 
-    kết quả sẽ hiển thị tương tự như sau:
+  kết quả sẽ hiển thị tương tự như sau:
 
         CONTAINER     CPU %    MEM USAGE / LIMIT    MEM %  NET I/O          BLOCK I/O
         9c2f69f8631e  25.75%   5.188MiB / 5.877GiB  0.09%  6.32MB / 7.63MB  34.2MB / 37.5MB
@@ -26,7 +23,7 @@ ____
 
         docker stats --format "table {{.Container}}\t{{.CPUPerc}}\t{{.MemUsage}}"
 
-    kết quả sẽ hiển thị tương tự như sau:
+  kết quả sẽ hiển thị tương tự như sau:
 
         CONTAINER           CPU %          MEM USAGE / LIMIT
         9c2f69f8631e        24.25%         5.203MiB / 5.877GiB
@@ -34,7 +31,7 @@ ____
         5a52bc636ec3        14.66%         948KiB / 5.877GiB
         f9f8d3140cd3        0.74%          27.55MiB / 5.877GiB
         e60048f81636        134.69%        49.63MiB / 5.877GiB
-        
-____
+
+---
 
 # <a name="content-others">Các nội dung khác</a>

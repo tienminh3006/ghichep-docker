@@ -1,14 +1,10 @@
-# 27. Thiết lập một mật khẩu trên redis khi không có cấu hình tùy chỉnh
-____
-____
+## 27. Thiết lập một mật khẩu trên redis khi không có cấu hình tùy chỉnh
 
-# <a name="content">Nội dung</a>
+### <a name="content">Nội dung</a>
 
 ![https://nickjanetakis.com/assets/blog/cards/docker-tips-and-tricks-56b5452dc709c8861641d9011d55ed5e6f5138b7d1e76a5e258160077c903076.jpg](https://nickjanetakis.com/assets/blog/cards/docker-tips-and-tricks-56b5452dc709c8861641d9011d55ed5e6f5138b7d1e76a5e258160077c903076.jpg)
 
-
-Có hai cách tiếp cận bạn có thể thực hiện:
-    - **Custom images**
+Có hai cách tiếp cận bạn có thể thực hiện: - **Custom images**
 
         + Bạn có thể thiết lập mật khẩu trong tệp `redis.conf` và sau đó xây dựng images Docker tùy chỉnh của riêng bạn bằng tệp cấu hình đó. Nó chắc chắn sẽ hoạt động nhưng bây giờ bạn phải chịu trách nhiệm quản lý custom image Docker đó.
 
@@ -23,21 +19,21 @@ Có hai cách tiếp cận bạn có thể thực hiện:
 
         + Dưới đây là cách bạn thường sử dụng images Redis:
 
-                 redis : 
-                    image : ' redis:4-alpine' 
-                    ports : 
-                        - ' 6379:6379' 
+                 redis :
+                    image : ' redis:4-alpine'
+                    ports :
+                        - ' 6379:6379'
 
         + Và đây là tất cả những gì bạn cần để thay đổi để thiết lập một mật khẩu tùy chỉnh:
 
-                 redis : 
-                    image : ' redis:4-alpine' 
-                    command : redis-server --requirepass yourpassword 
-                    ports : 
-                        - ' 6379:6379' 
+                 redis :
+                    image : ' redis:4-alpine'
+                    command : redis-server --requirepass yourpassword
+                    ports :
+                        - ' 6379:6379'
 
-        + Mọi thứ sẽ khởi động bình thường và máy chủ Redis của bạn sẽ được bảo vệ bằng mật khẩu. 
-            
-____
+        + Mọi thứ sẽ khởi động bình thường và máy chủ Redis của bạn sẽ được bảo vệ bằng mật khẩu.
+
+---
 
 # <a name="content-others">Các nội dung khác</a>

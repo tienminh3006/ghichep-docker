@@ -1,9 +1,6 @@
 # 2. Các câu lệnh được dùng phổ biến khi sử dụng Docker
 
-____
-
-# Mục lục
-
+## Mục lục
 
 - [2.1 Nhóm lệnh thao tác với container](#docker-container)
 - [2.2 Nhóm lệnh điều khiển container](#docker-control)
@@ -11,514 +8,512 @@ ____
 - [2.4 Nhóm lệnh thao tác monitor](#)
 - [Các nội dung khác](#content-others)
 
-____
-
-# <a name="content">Nội dung</a>
+## <a name="content">Nội dung</a>
 
 - ### <a name="docker-container">2.1 Nhóm lệnh thao tác với container</a>
 
-    - Câu lệnh `docker search`:
+  - Câu lệnh `docker search`:
 
-        + Chức năng: Tìm kiếm một images từ Docker Hub.
+    - Chức năng: Tìm kiếm một images từ Docker Hub.
 
-        + Cú pháp:
+    - Cú pháp:
 
-                docker search [OPTIONS] TERM
+            docker search [OPTIONS] TERM
 
-            trong đó options bao gồm:
+      trong đó options bao gồm:
 
-            | Options | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --limit | 25 | Max number of search results |
+      | Options | Mặc định | Mô tả                        |
+      | ------- | -------- | ---------------------------- |
+      | --limit | 25       | Max number of search results |
 
+    - Ví dụ:
 
-        + Ví dụ:
+            docker search debian
 
-                docker search debian
+  - Câu lệnh `docker pull`:
 
-    - Câu lệnh `docker pull`:
+    - Chức năng: Pull một image hoặc một repository từ registry.
 
-        + Chức năng: Pull một image hoặc một repository từ registry.
+    - Cú pháp:
 
-        + Cú pháp:
+            docker pull [OPTIONS] NAME[:TAG|@DIGEST]
 
-                docker pull [OPTIONS] NAME[:TAG|@DIGEST]
+      trong đó options bao gồm:
 
-            trong đó options bao gồm:
+      | Options                 | Mặc định | Mô tả                                          |
+      | ----------------------- | -------- | ---------------------------------------------- |
+      | --all-tags , -a         |          | Download tất cả tagged images trong repository |
+      | --disable-content-trust | true     | Bỏ qua việc xác minh image                     |
 
-            | Options | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --all-tags , -a |  | Download tất cả tagged images trong repository |
-            | --disable-content-trust | true | Bỏ qua việc xác minh image |
-            
-            - NAME là tên của image
+      - NAME là tên của image
 
-        + Ví dụ: Để pull một image từ Docker Hub. Ta thực hiện sử dụng câu lệnh:
+    - Ví dụ: Để pull một image từ Docker Hub. Ta thực hiện sử dụng câu lệnh:
 
-                docker pull debian
+            docker pull debian
 
-            kết quả:
+      kết quả:
 
-                Using default tag: latest
-                latest: Pulling from library/debian
-                fdd5d7827f33: Pull complete
-                : Pull complete
-                Digest: sha256:e7d38b3517548a1c71e41bffe9c8ae6d6d29546ce46bf62159837aad072c90aa
-                Status: Downloaded newer image for debian:latest
+            Using default tag: latest
+            latest: Pulling from library/debian
+            fdd5d7827f33: Pull complete
+            : Pull complete
+            Digest: sha256:e7d38b3517548a1c71e41bffe9c8ae6d6d29546ce46bf62159837aad072c90aa
+            Status: Downloaded newer image for debian:latest
 
-            Docker images trên bao gồm 2 layer đó là: `fdd5d7827f33` và `a3ed95caeb02`.
+      Docker images trên bao gồm 2 layer đó là: `fdd5d7827f33` và `a3ed95caeb02`.
 
-    - Câu lệnh `docker create`:
+  - Câu lệnh `docker create`:
 
-        + Chức năng: Tạo ra một container mới
+    - Chức năng: Tạo ra một container mới
 
-        + Cú pháp:
+    - Cú pháp:
 
-                docker create [OPTIONS] IMAGE [COMMAND] [ARG...]
+            docker create [OPTIONS] IMAGE [COMMAND] [ARG...]
 
-            trong đó các options phổ biến bao gồm:
+      trong đó các options phổ biến bao gồm:
 
-            | Options | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --attach , -a |  | Attach to STDIN, STDOUT or STDERR |
-            | --expose |  | Để lộ ra một port hoặc một dải port - public port |
-            | --env , -e |  | Khai báo giá trị biến môi trường. Một vài image sẽ yêu cầu options này khi tạo ra container |
-            | --hostname , -h |  | Khai báo container host name |
-            | --ip |  | Khai báo địa chỉ IPv4 cho container |
-            | --interactive , -i |  | Keep STDIN open even if not attached |
-            | --link |  | Khai báo tên container gắn kết với container sẽ tạo |
-            | --name |  | Khai báo tên cho container |
-            | --publish , -p |  | Publish port(s) của container tới host |
-            | --publish-all , -P |  | Publish tất cả exposed ports to ports ngẫu nhiên|
-            | --rm |  | Tự động xóa container khi thoát ra |
-            | --runtime |  | Khai báo runtime cho container |
-            | --volume , -v      |  | Gán một volume tới container |
-            | --tty , -t |  | Allocate a pseudo-TTY |
-        
-        + Ví dụ: Để tạo ra một container từ image có tên là fedora và giao tiếp với cli của container. Sử dụng câu lệnh:
+      | Options            | Mặc định | Mô tả                                                                                       |
+      | ------------------ | -------- | ------------------------------------------------------------------------------------------- |
+      | --attach , -a      |          | Attach to STDIN, STDOUT or STDERR                                                           |
+      | --expose           |          | Để lộ ra một port hoặc một dải port - public port                                           |
+      | --env , -e         |          | Khai báo giá trị biến môi trường. Một vài image sẽ yêu cầu options này khi tạo ra container |
+      | --hostname , -h    |          | Khai báo container host name                                                                |
+      | --ip               |          | Khai báo địa chỉ IPv4 cho container                                                         |
+      | --interactive , -i |          | Keep STDIN open even if not attached                                                        |
+      | --link             |          | Khai báo tên container gắn kết với container sẽ tạo                                         |
+      | --name             |          | Khai báo tên cho container                                                                  |
+      | --publish , -p     |          | Publish port(s) của container tới host                                                      |
+      | --publish-all , -P |          | Publish tất cả exposed ports to ports ngẫu nhiên                                            |
+      | --rm               |          | Tự động xóa container khi thoát ra                                                          |
+      | --runtime          |          | Khai báo runtime cho container                                                              |
+      | --volume , -v      |          | Gán một volume tới container                                                                |
+      | --tty , -t         |          | Allocate a pseudo-TTY                                                                       |
 
-                docker create -t -i fedora bash
+    - Ví dụ: Để tạo ra một container từ image có tên là fedora và giao tiếp với cli của container. Sử dụng câu lệnh:
 
-            hoặc
+            docker create -t -i fedora bash
 
-                docker create -it fedora bash
+      hoặc
 
-            kết quả:
+            docker create -it fedora bash
 
-                6d8af538ec541dd581ebc2a24153a28329acb5268abe5ef868c1f1a261221752
-            
-            đây là ID của container được sử dụng thay cho tên (Có thể sử dụng một vài ký tự đầu của ID thay vì sử dụng toàn bộ)
+      kết quả:
 
-    - Câu lệnh `docker cp`:
+            6d8af538ec541dd581ebc2a24153a28329acb5268abe5ef868c1f1a261221752
 
-        + Chức năng: Copy file/ folder giữa container và local filesystem.
+      đây là ID của container được sử dụng thay cho tên (Có thể sử dụng một vài ký tự đầu của ID thay vì sử dụng toàn bộ)
 
-        + Cú pháp:
+  - Câu lệnh `docker cp`:
 
-                docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
-                docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+    - Chức năng: Copy file/ folder giữa container và local filesystem.
 
-            trong đó các option bao gồm:
+    - Cú pháp:
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --archive , -a |  | Archive mode (copy all uid/gid information) |
-            | --follow-link , -L |  | Always follow symbol link in SRC_PATH |
+            docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+            docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
 
-            nếu ký tự `-` được khai báo, ta có  thể stream một file tar từ STDIN hoặc STOUT.
+      trong đó các option bao gồm:
 
-            Khai báo `compassionate_darwin:/tmp/foo/myfile.txt` và `compassionate_darwin:tmp/foo/myfile.txt` được xem là 2 khai báo giống nhau. Do `docker cp` giả định đường dẫn tương đối là `/` (root)
-    
-    - Câu lệnh `docker volume`:
+      | Option             | Mặc định | Mô tả                                       |
+      | ------------------ | -------- | ------------------------------------------- |
+      | --archive , -a     |          | Archive mode (copy all uid/gid information) |
+      | --follow-link , -L |          | Always follow symbol link in SRC_PATH       |
 
-        + Chức năng: Cung cấp các lệnh con để quản lý dữ liệu đối với containers.
+      nếu ký tự `-` được khai báo, ta có thể stream một file tar từ STDIN hoặc STOUT.
 
-        + Các câu lệnh con bao gồm:
+      Khai báo `compassionate_darwin:/tmp/foo/myfile.txt` và `compassionate_darwin:tmp/foo/myfile.txt` được xem là 2 khai báo giống nhau. Do `docker cp` giả định đường dẫn tương đối là `/` (root)
 
-            | Command | Mô tả |
-            | ------------- | ------------- |
-            | docker volume create | Tạo một volume |
-            | docker volume inspect | Hiển thị thông tin về một hay nhiều volumes |
-            | docker volume ls | Liệt kê volumes |
-            | docker volume prune | Loại bỏ volumes không sử dụng |
-            | docker volume rm | Loại bỏ một hay nhiều volumes |
-            
-        + Ví dụ: Để tạo một volume, ta sử dụng câu lệnh `docker volume create` với cú pháp:
+  - Câu lệnh `docker volume`:
 
-                docker volume create [OPTIONS] [VOLUME]
+    - Chức năng: Cung cấp các lệnh con để quản lý dữ liệu đối với containers.
 
-            trong đó các option bao gồm:
+    - Các câu lệnh con bao gồm:
 
-            | Options | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --driver , -d | local | Khai báo tên volume driver |
-            | --label |  | Set metadata for a volume |
-            | --name |  | Khai báo tên volume |
-            | --opt , -o |  | Set driver specific options |
+      | Command               | Mô tả                                       |
+      | --------------------- | ------------------------------------------- |
+      | docker volume create  | Tạo một volume                              |
+      | docker volume inspect | Hiển thị thông tin về một hay nhiều volumes |
+      | docker volume ls      | Liệt kê volumes                             |
+      | docker volume prune   | Loại bỏ volumes không sử dụng               |
+      | docker volume rm      | Loại bỏ một hay nhiều volumes               |
 
-            chẳng hạn `docker volume create hello`.
+    - Ví dụ: Để tạo một volume, ta sử dụng câu lệnh `docker volume create` với cú pháp:
 
-        + Một ví dụ khác là tạo một volume tpe nfs mout đường dẫn `/path/to/dir` với chế độ `rw` từ host `192.168.1.1`. Ta sử dụng thêm tùy chọn `--opt` như sau:
+            docker volume create [OPTIONS] [VOLUME]
 
-                docker volume create --driver local \
-                --opt type=nfs \
-                --opt o=addr=192.168.1.1,rw \
-                --opt device=:/path/to/dir \
-                hello
+      trong đó các option bao gồm:
 
-    - Câu lệnh `docker build`:
+      | Options       | Mặc định | Mô tả                       |
+      | ------------- | -------- | --------------------------- |
+      | --driver , -d | local    | Khai báo tên volume driver  |
+      | --label       |          | Set metadata for a volume   |
+      | --name        |          | Khai báo tên volume         |
+      | --opt , -o    |          | Set driver specific options |
 
-        + Chức năng: Build một image từ một Dockerfile.
+      chẳng hạn `docker volume create hello`.
 
-        + Cú pháp:
+    - Một ví dụ khác là tạo một volume tpe nfs mout đường dẫn `/path/to/dir` với chế độ `rw` từ host `192.168.1.1`. Ta sử dụng thêm tùy chọn `--opt` như sau:
 
-                docker build [OPTIONS] PATH | URL | -
+            docker volume create --driver local \
+            --opt type=nfs \
+            --opt o=addr=192.168.1.1,rw \
+            --opt device=:/path/to/dir \
+            hello
 
-            trong đó options phổ biến bao gồm:
+  - Câu lệnh `docker build`:
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --file , -f |  | Khai báo tên của Dockerfile. Mặc định là ‘PATH/Dockerfile’ |
-            | --rm | true | Loại bỏ các container trung gian sau khi build thành công |
-            
-    - Câu lệnh `docker push`:
+    - Chức năng: Build một image từ một Dockerfile.
 
-        + Chức năng: Push một image hoặc một repository tới registry.
+    - Cú pháp:
 
-        + Cú pháp:
+            docker build [OPTIONS] PATH | URL | -
 
-                docker push [OPTIONS] NAME[:TAG]
+      trong đó options phổ biến bao gồm:
 
-            trong đó option bao gồm:
+      | Option      | Mặc định | Mô tả                                                      |
+      | ----------- | -------- | ---------------------------------------------------------- |
+      | --file , -f |          | Khai báo tên của Dockerfile. Mặc định là ‘PATH/Dockerfile’ |
+      | --rm        | true     | Loại bỏ các container trung gian sau khi build thành công  |
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --disable-content-trust | true | Skip image signing |
-            
-        + Ví dụ: Muốn push một image, ta cần phải commit image, sau đó tạo ra tag image trước khi push.
+  - Câu lệnh `docker push`:
 
-                docker commit c16378f943fe rhel-httpd
+    - Chức năng: Push một image hoặc một repository tới registry.
 
-                docker tag rhel-httpd registry-host:5000/myadmin/rhel-httpd
+    - Cú pháp:
 
-                docker push registry-host:5000/myadmin/rhel-httpd
+            docker push [OPTIONS] NAME[:TAG]
 
-    - Câu lệnh `docker rename`:
+      trong đó option bao gồm:
 
-        + Chức năng: Thay đổi tên của một container.
+      | Option                  | Mặc định | Mô tả              |
+      | ----------------------- | -------- | ------------------ |
+      | --disable-content-trust | true     | Skip image signing |
 
-        + Cú pháp:
+    - Ví dụ: Muốn push một image, ta cần phải commit image, sau đó tạo ra tag image trước khi push.
 
-                docker rename CONTAINER NEW_NAME
+            docker commit c16378f943fe rhel-httpd
 
-        + Ví dụ:
+            docker tag rhel-httpd registry-host:5000/myadmin/rhel-httpd
 
-                docker rename c16378f943fe mysql
+            docker push registry-host:5000/myadmin/rhel-httpd
 
-    - Câu lệnh `docker save`:
+  - Câu lệnh `docker rename`:
 
-        + Chức năng: Lưu một hoặc nhiều image tới một file nén tar (mặc định streamed từ STDOUT)
+    - Chức năng: Thay đổi tên của một container.
 
-        + Cú pháp:
+    - Cú pháp:
 
-                docker save [OPTIONS] IMAGE [IMAGE...]
+            docker rename CONTAINER NEW_NAME
 
-            trong đó option có thể là:
+    - Ví dụ:
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --output , -o |  | Ghi dữ liệu ra một file với tên khai báo, thay thế cho STDOUT |
+            docker rename c16378f943fe mysql
 
-        + Ví dụ:
+  - Câu lệnh `docker save`:
 
-                docker save busybox > busybox.tar
+    - Chức năng: Lưu một hoặc nhiều image tới một file nén tar (mặc định streamed từ STDOUT)
 
-            hoặc
+    - Cú pháp:
 
-                docker save --output busybox.tar busybox
-            
+            docker save [OPTIONS] IMAGE [IMAGE...]
+
+      trong đó option có thể là:
+
+      | Option        | Mặc định | Mô tả                                                         |
+      | ------------- | -------- | ------------------------------------------------------------- |
+      | --output , -o |          | Ghi dữ liệu ra một file với tên khai báo, thay thế cho STDOUT |
+
+    - Ví dụ:
+
+            docker save busybox > busybox.tar
+
+      hoặc
+
+            docker save --output busybox.tar busybox
+
 - ### <a name="docker-control">2.2 Nhóm lệnh điều khiển container</a>
 
-    - Câu lệnh `docker run`:
+  - Câu lệnh `docker run`:
 
-        + Chức năng: Tạo mới một container và tự động khởi chạy nó khi tạo xong. Câu lệnh này có vai trò tương tự như câu lệnh `docker create` nhưng `docker create` còn cho phép cấu hình hình thêm các yêu cầu còn thiếu sau khi tạo ra container để có thể hoạt động đúng mục đích.
+    - Chức năng: Tạo mới một container và tự động khởi chạy nó khi tạo xong. Câu lệnh này có vai trò tương tự như câu lệnh `docker create` nhưng `docker create` còn cho phép cấu hình hình thêm các yêu cầu còn thiếu sau khi tạo ra container để có thể hoạt động đúng mục đích.
 
-        + Cú pháp:
+    - Cú pháp:
 
-                docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+            docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
 
-            trong đó các option phổ biến bao gồm:
+      trong đó các option phổ biến bao gồm:
 
-            | Options | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --attach , -a |  | Attach to STDIN, STDOUT or STDERR |
-            | --expose |  | Để lộ ra một port hoặc một dải port - public port |
-            | --env , -e |  | Khai báo giá trị biến môi trường. Một vài image sẽ yêu cầu options này khi tạo ra container |
-            | --detach , -d |  | Chạy container trong background và print container ID |
-            | --hostname , -h |  | Khai báo container host name |
-            | --ip |  | Khai báo địa chỉ IPv4 cho container |
-            | --interactive , -i |  | Keep STDIN open even if not attached |
-            | --link |  | Khai báo tên container gắn kết với container sẽ tạo |
-            | --name |  | Khai báo tên cho container |
-            | --publish , -p |  | Publish port(s) của container tới host |
-            | --publish-all , -P |  | Publish tất cả exposed ports to ports ngẫu nhiên|
-            | --rm |  | Tự động xóa container khi thoát ra |
-            | --runtime |  | Khai báo runtime cho container |
-            | --volume , -v      |  | Gán một volume tới container |
-            | --tty , -t |  | Allocate a pseudo-TTY |
+      | Options            | Mặc định | Mô tả                                                                                       |
+      | ------------------ | -------- | ------------------------------------------------------------------------------------------- |
+      | --attach , -a      |          | Attach to STDIN, STDOUT or STDERR                                                           |
+      | --expose           |          | Để lộ ra một port hoặc một dải port - public port                                           |
+      | --env , -e         |          | Khai báo giá trị biến môi trường. Một vài image sẽ yêu cầu options này khi tạo ra container |
+      | --detach , -d      |          | Chạy container trong background và print container ID                                       |
+      | --hostname , -h    |          | Khai báo container host name                                                                |
+      | --ip               |          | Khai báo địa chỉ IPv4 cho container                                                         |
+      | --interactive , -i |          | Keep STDIN open even if not attached                                                        |
+      | --link             |          | Khai báo tên container gắn kết với container sẽ tạo                                         |
+      | --name             |          | Khai báo tên cho container                                                                  |
+      | --publish , -p     |          | Publish port(s) của container tới host                                                      |
+      | --publish-all , -P |          | Publish tất cả exposed ports to ports ngẫu nhiên                                            |
+      | --rm               |          | Tự động xóa container khi thoát ra                                                          |
+      | --runtime          |          | Khai báo runtime cho container                                                              |
+      | --volume , -v      |          | Gán một volume tới container                                                                |
+      | --tty , -t         |          | Allocate a pseudo-TTY                                                                       |
 
-        + Ví dụ: Để chạy một container của image debian có tên là test. Ta thực hiện sử dụng câu lệnh:
+    - Ví dụ: Để chạy một container của image debian có tên là test. Ta thực hiện sử dụng câu lệnh:
 
-                docker run --name test -itd debian
+            docker run --name test -itd debian
 
-    - Câu lệnh `docker start`:
+  - Câu lệnh `docker start`:
 
-        + Chức năng: Khởi chạy một container khi nó đang ở trạng thái `created`. Hoặc dừng nhiều container khi các container đang ở trạng thái `running`
+    - Chức năng: Khởi chạy một container khi nó đang ở trạng thái `created`. Hoặc dừng nhiều container khi các container đang ở trạng thái `running`
 
-        + Cú pháp:
+    - Cú pháp:
 
-                docker start [OPTIONS] CONTAINER [CONTAINER...]
+            docker start [OPTIONS] CONTAINER [CONTAINER...]
 
-            trong đó các option phổ biến hay dùng là:
+      trong đó các option phổ biến hay dùng là:
 
-            | Option | Mặc định |  |
-            | ------------- | ------------- | ------------- |
-            | --attach , -a |  | Attach STDOUT/STDERR and forward signals |
-            | --interactive , -i |  | Attach container’s STDIN |
+      | Option             | Mặc định |                                          |
+      | ------------------ | -------- | ---------------------------------------- |
+      | --attach , -a      |          | Attach STDOUT/STDERR and forward signals |
+      | --interactive , -i |          | Attach container’s STDIN                 |
 
-        + Ví dụ: Để khởi chạy một container có tên là docker-mysql. Ta sử dụng câu lệnh:
+    - Ví dụ: Để khởi chạy một container có tên là docker-mysql. Ta sử dụng câu lệnh:
 
-                docker start docker-mysql
+            docker start docker-mysql
 
-    - Câu lệnh `docker restart`:
+  - Câu lệnh `docker restart`:
 
-        + Chức năng: Restart một hoặc nhiều container khi container đang ở trạng thái `running`
+    - Chức năng: Restart một hoặc nhiều container khi container đang ở trạng thái `running`
 
-        + Cú pháp:
+    - Cú pháp:
 
-                docker restart [OPTIONS] CONTAINER [CONTAINER...]
+            docker restart [OPTIONS] CONTAINER [CONTAINER...]
 
-            trong đó option bao gồm:
+      trong đó option bao gồm:
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --time , -t| 10 | Khai báo thời gian chờ để thực hiện stop container trước khi kill container |
+      | Option      | Mặc định | Mô tả                                                                       |
+      | ----------- | -------- | --------------------------------------------------------------------------- |
+      | --time , -t | 10       | Khai báo thời gian chờ để thực hiện stop container trước khi kill container |
 
-        + Ví dụ: Để restart docker có tên là docker-mysql. Ta sử dụng câu lệnh:
+    - Ví dụ: Để restart docker có tên là docker-mysql. Ta sử dụng câu lệnh:
 
-                docker restart docker-mysql
+            docker restart docker-mysql
 
-    - Câu lệnh `docker stop`:
+  - Câu lệnh `docker stop`:
 
-        + Chức năng:  Dừng một hoặc nhiều container đang chạy
+    - Chức năng: Dừng một hoặc nhiều container đang chạy
 
-        + Cú pháp:
+    - Cú pháp:
 
-                docker stop [OPTIONS] CONTAINER [CONTAINER...]
+            docker stop [OPTIONS] CONTAINER [CONTAINER...]
 
-            trong đó option bao gồm:
+      trong đó option bao gồm:
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --time , -t| 10 | Khai báo thời gian chờ để thực hiện stop container trước khi kill container |
-            
-        + Ví dụ:
+      | Option      | Mặc định | Mô tả                                                                       |
+      | ----------- | -------- | --------------------------------------------------------------------------- |
+      | --time , -t | 10       | Khai báo thời gian chờ để thực hiện stop container trước khi kill container |
 
-                docker stop docker-mysql
+    - Ví dụ:
 
-    - Câu lệnh `docker exec`:
+            docker stop docker-mysql
 
-        + Chức năng: Chạy một command bên trong container đang ở trạng thái `running`.
+  - Câu lệnh `docker exec`:
 
-        + Cú pháp:
+    - Chức năng: Chạy một command bên trong container đang ở trạng thái `running`.
 
-                docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
+    - Cú pháp:
 
-            trong đó các option phổ biến bao gồm:
+            docker exec [OPTIONS] CONTAINER COMMAND [ARG...]
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --detach , -d |  | Detached mode: run command in the background |
-            | --env , -e |  | Set environment variables |
-            | --interactive , -i     |  | Keep STDIN open even if not attached |
-            | --tty , -t |  | Allocate a pseudo-TTY |
+      trong đó các option phổ biến bao gồm:
 
-        + Ví dụ:
+      | Option             | Mặc định | Mô tả                                        |
+      | ------------------ | -------- | -------------------------------------------- |
+      | --detach , -d      |          | Detached mode: run command in the background |
+      | --env , -e         |          | Set environment variables                    |
+      | --interactive , -i |          | Keep STDIN open even if not attached         |
+      | --tty , -t         |          | Allocate a pseudo-TTY                        |
 
-                docker exec -it debian bash
+    - Ví dụ:
 
-    - Câu lệnh `docker rm`:
+            docker exec -it debian bash
 
-        + Chức năng: Loại bỏ một hoặc nhiều container.
+  - Câu lệnh `docker rm`:
 
-        + Cú pháp:
+    - Chức năng: Loại bỏ một hoặc nhiều container.
 
-                docker rm [OPTIONS] CONTAINER [CONTAINER...]
+    - Cú pháp:
 
-            trong đó các option bao gồm:
+            docker rm [OPTIONS] CONTAINER [CONTAINER...]
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --force , -f |  | Được sử dụng để loại bỏ container khi nó đang ở trạng thái `running` |
-            | --link , -l |  | Loại bỏ container liên kết được khai báo |
-            | --volumes , -v     |  | Loại bỏ volume liên kết với container |
+      trong đó các option bao gồm:
 
-        + Ví dụ:
+      | Option         | Mặc định | Mô tả                                                                |
+      | -------------- | -------- | -------------------------------------------------------------------- |
+      | --force , -f   |          | Được sử dụng để loại bỏ container khi nó đang ở trạng thái `running` |
+      | --link , -l    |          | Loại bỏ container liên kết được khai báo                             |
+      | --volumes , -v |          | Loại bỏ volume liên kết với container                                |
 
-                docker rm -f docker-mysql
+    - Ví dụ:
 
-    - Câu lệnh `docker rmi`:
+            docker rm -f docker-mysql
 
-        + Chức năng: Loại bỏ một image. Khi loại bỏ một image, thì các container đang sử dụng image bị loại bỏ sẽ không thể hoạt động.
+  - Câu lệnh `docker rmi`:
 
-        + Cú pháp:
+    - Chức năng: Loại bỏ một image. Khi loại bỏ một image, thì các container đang sử dụng image bị loại bỏ sẽ không thể hoạt động.
 
-                docker rmi [OPTIONS] IMAGE [IMAGE...]
+    - Cú pháp:
 
-            trong đó các option bao gồm:
+            docker rmi [OPTIONS] IMAGE [IMAGE...]
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --force , -f |  | Được sử dụng để loại bỏ image khi image đang được dùng cho một hay nhiều container |
-            | --no-prune |  | Do not delete untagged parents |
+      trong đó các option bao gồm:
 
-        + Ví dụ:
+      | Option       | Mặc định | Mô tả                                                                              |
+      | ------------ | -------- | ---------------------------------------------------------------------------------- |
+      | --force , -f |          | Được sử dụng để loại bỏ image khi image đang được dùng cho một hay nhiều container |
+      | --no-prune   |          | Do not delete untagged parents                                                     |
 
-                docker rmi debian
+    - Ví dụ:
 
-    - Câu lệnh `docker attach`:
+            docker rmi debian
 
-        + Chức năng: Attach local standard input, output, and error streams to a running container
+  - Câu lệnh `docker attach`:
 
-        + Cú pháp:
+    - Chức năng: Attach local standard input, output, and error streams to a running container
 
-                docker attach [OPTIONS] CONTAINER
+    - Cú pháp:
 
-            trong đó các option bao gồm:
+            docker attach [OPTIONS] CONTAINER
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --detach-keys |  | Override the key sequence for detaching a container |
-            | --no-stdin     |  | Do not attach STDIN |
-            | --sig-proxy | true | Proxy all received signals to the process |
+      trong đó các option bao gồm:
 
-        + Ví dụ:
+      | Option        | Mặc định | Mô tả                                               |
+      | ------------- | -------- | --------------------------------------------------- |
+      | --detach-keys |          | Override the key sequence for detaching a container |
+      | --no-stdin    |          | Do not attach STDIN                                 |
+      | --sig-proxy   | true     | Proxy all received signals to the process           |
 
-                docker attach debian
+    - Ví dụ:
+
+            docker attach debian
 
 - ### <a name="docker-network">2.3 Nhóm lệnh thao tác với network</a>
 
-    - Các lệnh thao tác với network bao gồm:
+  - Các lệnh thao tác với network bao gồm:
 
-        | Command | Mô tả |
-        | ------------- | ------------- |
-        | docker network connect | Kết nối container tới một network |
-        | docker network create | Tạo ra một network mới |
-        | docker network disconnect | Ngắt kết nối container từ một network |
-        | docker network inspect | Hiển thị thông tin chi tiết về một hay nhiều networks |
-        | docker network ls | Liệt kê các network |
-        | docker network prune | Loại bỏ các network không được sử dụng |
-        | docker network rm | Loại bỏ một hoặc nhiều các network |
+    | Command                   | Mô tả                                                 |
+    | ------------------------- | ----------------------------------------------------- |
+    | docker network connect    | Kết nối container tới một network                     |
+    | docker network create     | Tạo ra một network mới                                |
+    | docker network disconnect | Ngắt kết nối container từ một network                 |
+    | docker network inspect    | Hiển thị thông tin chi tiết về một hay nhiều networks |
+    | docker network ls         | Liệt kê các network                                   |
+    | docker network prune      | Loại bỏ các network không được sử dụng                |
+    | docker network rm         | Loại bỏ một hoặc nhiều các network                    |
 
-    - Để biết chi tiết về các lệnh, ta sử dụng cú pháp
+  - Để biết chi tiết về các lệnh, ta sử dụng cú pháp
 
-            command --help
+          command --help
 
-        ví dụ:
+    ví dụ:
 
-            docker network create --help
-        
+          docker network create --help
+
 - ### <a name="">2.4 Nhóm lệnh thao tác monitor</a>
 
-    - Câu lệnh `docker stats`:
+  - Câu lệnh `docker stats`:
 
-        + Chức năng: Hiển thị một livestream thống kê về tài nguyên sử dụng của container(s).
+    - Chức năng: Hiển thị một livestream thống kê về tài nguyên sử dụng của container(s).
 
-        + Cú pháp:
+    - Cú pháp:
 
-                docker stats [OPTIONS] [CONTAINER...]
+            docker stats [OPTIONS] [CONTAINER...]
 
-            trong đó các option bao gồm:
+      trong đó các option bao gồm:
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --all , -a |  | Hiển thị thống kê cho tất cả containers đang chạy |
-            | --no-stream |  | Disable streaming stats and only pull the first result |
+      | Option      | Mặc định | Mô tả                                                  |
+      | ----------- | -------- | ------------------------------------------------------ |
+      | --all , -a  |          | Hiển thị thống kê cho tất cả containers đang chạy      |
+      | --no-stream |          | Disable streaming stats and only pull the first result |
 
-        + Ví dụ:
+    - Ví dụ:
 
-                docker stats --all
+            docker stats --all
 
-    - Câu lệnh `docker ps`:
+  - Câu lệnh `docker ps`:
 
-        + Chức năng: Liệt kê các containers
+    - Chức năng: Liệt kê các containers
 
-        + Cú pháp:
+    - Cú pháp:
 
-                docker ps [OPTIONS]
+            docker ps [OPTIONS]
 
-            trong đó các option bao gồm:
+      trong đó các option bao gồm:
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --all , -a |  | Hiển thị thống kê cho tất cả containers đang chạy |
-            | --quiet , -q |  | Only display numeric IDs |
-            | --size , -s |  | Display total file sizes |
-        
-        + Ví dụ:
+      | Option       | Mặc định | Mô tả                                             |
+      | ------------ | -------- | ------------------------------------------------- |
+      | --all , -a   |          | Hiển thị thống kê cho tất cả containers đang chạy |
+      | --quiet , -q |          | Only display numeric IDs                          |
+      | --size , -s  |          | Display total file sizes                          |
 
-                docker ps --all
+    - Ví dụ:
 
-    - Câu lệnh `docker inspect`:
+            docker ps --all
 
-        + Chức năng: Hiển thị thông tin của Docker objects
+  - Câu lệnh `docker inspect`:
 
-        + Cú pháp:
+    - Chức năng: Hiển thị thông tin của Docker objects
 
-                docker inspect [OPTIONS] NAME|ID [NAME|ID...]
+    - Cú pháp:
 
-            trong đó các option bao gồm:
+            docker inspect [OPTIONS] NAME|ID [NAME|ID...]
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --format , -f |  | Format the output using the given Go template |
-            | --size , -s |  | Display total file sizes if the type is container |
-            | --type |  | Return JSON for specified type |
+      trong đó các option bao gồm:
 
-        + Ví dụ:
+      | Option        | Mặc định | Mô tả                                             |
+      | ------------- | -------- | ------------------------------------------------- |
+      | --format , -f |          | Format the output using the given Go template     |
+      | --size , -s   |          | Display total file sizes if the type is container |
+      | --type        |          | Return JSON for specified type                    |
 
-                docker inspect debian
+    - Ví dụ:
 
-    - Câu lệnh `docker images`:
+            docker inspect debian
 
-        + Chức năng: Liệt kê các image trên local
+  - Câu lệnh `docker images`:
 
-        + Cú pháp:
+    - Chức năng: Liệt kê các image trên local
 
-                docker images [OPTIONS] [REPOSITORY[:TAG]]
+    - Cú pháp:
 
-            trong đó các option bao gồm:
+            docker images [OPTIONS] [REPOSITORY[:TAG]]
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --all , -a |  | Hiển thị tất cả các image |
-            | --digests |  | Show digests |
-            | --quiet , -q   |  | Only show numeric IDs |
+      trong đó các option bao gồm:
 
-    - Câu lệnh `docker network ls`:
+      | Option       | Mặc định | Mô tả                     |
+      | ------------ | -------- | ------------------------- |
+      | --all , -a   |          | Hiển thị tất cả các image |
+      | --digests    |          | Show digests              |
+      | --quiet , -q |          | Only show numeric IDs     |
 
-        + Chức năng: Liệt kê danh sách các network interfaces
+  - Câu lệnh `docker network ls`:
 
-        + Cú pháp:
+    - Chức năng: Liệt kê danh sách các network interfaces
 
-                docker network ls [OPTIONS]
+    - Cú pháp:
 
-            trong đó các option bao gồm:
+            docker network ls [OPTIONS]
 
-            | Option | Mặc định | Mô tả |
-            | ------------- | ------------- | ------------- |
-            | --quiet , -q   |  | Only show numeric IDs |
-____
+      trong đó các option bao gồm:
+
+      | Option       | Mặc định | Mô tả                 |
+      | ------------ | -------- | --------------------- |
+      | --quiet , -q |          | Only show numeric IDs |
+
+---
 
 # <a name="content-others">Các nội dung khác</a>
 

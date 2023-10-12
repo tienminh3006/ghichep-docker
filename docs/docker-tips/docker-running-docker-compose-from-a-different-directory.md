@@ -1,8 +1,6 @@
-# 30. Chạy Docker Compose từ một thư mục khác
-____
-____
+## 30. Chạy Docker Compose từ một thư mục khác
 
-# <a name="content">Nội dung</a>
+### <a name="content">Nội dung</a>
 
 ![https://nickjanetakis.com/assets/blog/cards/docker-tips-and-tricks-56b5452dc709c8861641d9011d55ed5e6f5138b7d1e76a5e258160077c903076.jpg](https://nickjanetakis.com/assets/blog/cards/docker-tips-and-tricks-56b5452dc709c8861641d9011d55ed5e6f5138b7d1e76a5e258160077c903076.jpg)
 
@@ -14,8 +12,8 @@ ____
 
         docker-compose -f /tmp/myproject/docker-compose.yml up -d
 
-    từ bất cứ nơi nào trong `file system` của bạn và mọi việc sẽ làm việc như bình thường.
-    
-____
+  từ bất cứ nơi nào trong `file system` của bạn và mọi việc sẽ làm việc như bình thường.
+
+---
 
 # <a name="content-others">Các nội dung khác</a>

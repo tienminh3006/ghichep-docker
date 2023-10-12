@@ -1,10 +1,12 @@
 ## Cài đặt docker
 
 ## Yêu cầu
-- Ubuntu Server 16.04 64 bit
-- Docker version 17.12.0-ce, build c97c6d6
+
+- Ubuntu Server 20.04 64 bit
+- Docker version 24.0.6
 
 ## Các bước cài đặt.
+
 - Đăng nhập vào máy chủ Ubuntu bằng quyền root
 - Tải các thành phần phụ trợ
 
@@ -19,13 +21,15 @@
     curl \
     software-properties-common
   ```
-  
-- Add repos của Docker
 
-  ```sh
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+- Then add the GPG key for the official Docker repository to your system:
+
   ```
-  
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  ```
+
+- Add the Docker repository to APT sources:
+
   ```sh
   sudo add-apt-repository -y \
     "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
@@ -40,7 +44,7 @@
   sudo apt-get -y install docker-ce
   ```
 
-- Khởi động và kích hoạt docker 
+- Khởi động và kích hoạt docker
 
   ```sh
   systemctl start docker
@@ -51,24 +55,27 @@
 
   ```sh
   docker --version
-  ```  
-  - Kết quả trả về là 
+  ```
+
+  - Kết quả trả về là
     ```sh
-    Docker version 17.12.0-ce, build c97c6d6
+    Docker version Docker version 24.0.6
     ```
-   
+
 - Tạo container đầu tiên để thử nghiệm
 
   ```sh
   docker run -d -p 80:80 httpd
-  ```  
+  ```
+
   Trong đó:
-    - `-d` là tùy chọn để container chạy ngầm (chạy liên tục sau khi hoàn thành xong lệnh)
-    - `-p 80:80` là tùy chọn để cho phép port của máy chủ cài docker ánh xạ tới port của container.
-    - `httpd` là image được dùng để tạo ra container.
-  
+
+  - `-d` là tùy chọn để container chạy ngầm (chạy liên tục sau khi hoàn thành xong lệnh)
+  - `-p 80:80` là tùy chọn để cho phép port của máy chủ cài docker ánh xạ tới port của container.
+  - `httpd` là image được dùng để tạo ra container.
+
   Kết quả của lệnh `docker run -d -p 80:80 httpd`
-  
+
   ```sh
   root@devstack1:~# docker run -d -p 80:80 httpd
   Unable to find image 'httpd:latest' locally
@@ -84,11 +91,11 @@
   Status: Downloaded newer image for httpd:latest
   53458790a068c405d7e5991c9931dddf9a3263b8f439084c363fa55af05fb9e7
   ```
-  
-Trong kết quả trên ta thấy có 2 bước xử lý chính.
-- (Pull) Kéo (tải) images `httpd:latest` về vì lần đầu tiên tạo container không tìm thấy images này. Images `httpd` này được tải qua internet từ docker hub. Lưu ý: Việc tải images này cũng có thể thực hiện qua việc xây dựng một máy chủ chứa các images trong mạng LAN.
-- Sau khi tải xong (pull) images `httpd`, máy sẽ tạo ra container và ánh xạ port 80 của host vào port 80 của container.  
 
+Trong kết quả trên ta thấy có 2 bước xử lý chính.
+
+- (Pull) Kéo (tải) images `httpd:latest` về vì lần đầu tiên tạo container không tìm thấy images này. Images `httpd` này được tải qua internet từ docker hub. Lưu ý: Việc tải images này cũng có thể thực hiện qua việc xây dựng một máy chủ chứa các images trong mạng LAN.
+- Sau khi tải xong (pull) images `httpd`, máy sẽ tạo ra container và ánh xạ port 80 của host vào port 80 của container.
 
 Mở trình duyệt web và truy cập vào địa chỉ của máy cài đặt docker, ta sẽ có trang web hiển thị.
 
@@ -105,20 +112,20 @@ Ngoài ra có thể tìm hiểu thêm các lệnh cơ bản để làm việc v�
   root@devstack1:~# docker ps
   CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                NAMES
   53458790a068        httpd               "httpd-foreground"   7 minutes ago       Up 7 minutes        0.0.0.0:80->80/tcp   upbeat_tereshkova
-  ````
-  Trong kết quả trên ta có thể quan sát các cột để có thêm thông tin về hoạt động của container (hãy chú ý cột `CONTAINER ID, STATUS và PORTS`. Có thể thực hiện lệnh `docker ps -a` để hiện thị toàn bộ các container - trong đó bao gồm các container đã tạm dừng hoạt động. 
-    
-  
+  ```
+  Trong kết quả trên ta có thể quan sát các cột để có thêm thông tin về hoạt động của container (hãy chú ý cột `CONTAINER ID, STATUS và PORTS`. Có thể thực hiện lệnh `docker ps -a` để hiện thị toàn bộ các container - trong đó bao gồm các container đã tạm dừng hoạt động.
 - Kiểm tra danh sách của các images
 
   ```sh
   docker images
   ```
-  - Kết quả  
+
+  - Kết quả
+
   ```sh
   REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
   httpd               latest              01154c38b473        10 days ago         177MB
-  ````
+  ```
 
 - Xem thông tin chi tiết của container `docker inspect ID_Hoac_ten_container`. Kết quả trả về là các thông tin chi tiết bên trong container, các thông tin này sẽ được thảo luận kỹ ở các mục sau.
 
@@ -131,5 +138,3 @@ Ngoài ra có thể tìm hiểu thêm các lệnh cơ bản để làm việc v�
   ```sh
   docker rm -f  53458790a068
   ```
-
-
