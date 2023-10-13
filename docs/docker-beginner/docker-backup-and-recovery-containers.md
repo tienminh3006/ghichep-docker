@@ -22,18 +22,6 @@
 
   ![create_docker_hub_1](../../images/create_docker_hub_1.png)
 
-  Điền thông tin vào form đăng ký
-
-  ![create_docker_hub_1](../../images/create_docker_hub_2.png)
-
-  Mở email xác nhận đăng ký
-
-  ![create_docker_hub_1](../../images/create_docker_hub_3.png)
-
-  Thực hiện đăng nhập để bắt đầu sử dụng
-
-  ![create_docker_hub_1](../../images/create_docker_hub_4.png)
-
   Nhấn vào `Create repository` để tạo mới một repo lưu image bạn mong muốn
 
   ![create_docker_hub_1](../../images/create_docker_hub_5.png)

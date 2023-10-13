@@ -41,7 +41,7 @@
 	....
 	```
 
-### 1.2. Tìm kiếm immages từ Docker HUB
+### 1.2. Tìm kiếm images từ Docker HUB
 
 - Sử dụng lệnh `docker search` để tìm kiếm các images trên Docker HUB
 

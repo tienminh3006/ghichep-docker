@@ -107,4 +107,4 @@ nginx
 echo "127.0.0.1   myhub.docker.io" >> /etc/hosts
 
 # cd /docker-registry
-# docker-compose up
+# docker compose up

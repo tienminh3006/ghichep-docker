@@ -15,6 +15,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 sleep 3
 echo "Kiem tra phien ban docker va docker compose"
 docker version 
-docker-compose --version
+docker compose --version
 ##############
 echo "IMOK"

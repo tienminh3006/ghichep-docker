@@ -6,24 +6,11 @@
 - Việc sử dụng Docker Compose được tóm lược trong 3 bước cơ bản sau:
   - Khai báo app’s environment với Dockerfile.
   - Khai báo các services cần thiết để chạy app trong docker-compose.yml.
-  - Run docker-compose up và Compose sẽ start và run app.
+  - Run docker compose up và Compose sẽ start và run app.
 
 ### 1. Cài đặt
 
-- Install using pip
-
-```sh
-$ pip install docker-compose
-```
-
-Hoặc bạn có thể sử dụng cách khác:
-
-- Install as a container
-
-```sh
-$ curl -L https://github.com/docker/compose/releases/download/1.11.2/run.sh > /usr/local/bin/docker-compose
-$ chmod +x /usr/local/bin/docker-compose
-```
+- Có sẵn khi cài đặt Docker version 24.0.6 trở lên
 
 ### 2. Ví dụ chạy wordpress.
 
@@ -32,7 +19,7 @@ Chúng ta sẽ tạo ra 2 containers, 1 containers chứa mã nguồn wordpress 
 - Đoạn mã compose: Viết theo cú pháp **YAML**.
 
 ```sh
-version: '2'
+version: '3'
 
 services:
    db:
@@ -58,7 +45,7 @@ services:
        WORDPRESS_DB_PASSWORD: wordpress
 ```
 
-- `version: '2'`: Chỉ ra phiên bản docker-compose sẽ sử dụng.
+- `version: '3'`: Chỉ ra phiên bản docker-compose sẽ sử dụng.
 - `services:`: Trong mục services, chỉ ra những services (containers) mà ta sẽ cài đặt. Ở đây, tạo sẽ tạo ra services tương ứng với 2 containers là db và wordpress.
 - Trong services db:
   - image: chỉ ra image sẽ được sử dụng để create containers. Ngoài ra, bạn có thể viết dockerfile và khai báo lệnh `build` để containers sẽ được create từ dockerfile.
@@ -74,7 +61,7 @@ services:
 - Khởi chạy
 
 ```sh
-root@adk:/opt/test/data# docker-compose up
+root@adk:/opt/test/data# docker compose up
 ```
 
 - Kết quả

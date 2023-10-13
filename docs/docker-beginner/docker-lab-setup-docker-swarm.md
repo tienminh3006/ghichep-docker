@@ -4,12 +4,14 @@
 - [Cài đặt Docker Swarm trên Ubuntu Server 16.04 64](#2)
 
 <a name="1">Cài đặt Docker Swarm trên CentOS 7</a>
+
 ## Môi trường LAB
+
 - 03 node cài CentOS7: 01 node master và 02 node worker
+
 ### Mô hình
 
 ### Phân hoạch IP
-
 
 ## Setup hostname và IP theo phân hoạch ip
 
@@ -54,7 +56,6 @@ sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 ```
 
-
 ### Thiết lập trên node worker1
 
 - Khai báo hostname
@@ -94,8 +95,6 @@ sudo systemctl start network
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 ```
-
-
 
 ### Thiết lập trên node worker2
 
@@ -144,12 +143,12 @@ sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 - Cài đặt docker engine và chuẩn bị để sẵn sàng cấu hình docker swarm trên cả 03 node.
 
 ```sh
-su - 
+su -
 
 curl -sSL https://get.docker.com/ | sudo sh
 ```
 
-- Phân quyền cho user để sử dụng docker 
+- Phân quyền cho user để sử dụng docker
 
 ```sh
 sudo usermod -aG docker `whoami`
@@ -168,7 +167,7 @@ systemctl enable docker.service
 docker version
 ```
 
-- Kiểm tra hoạt động của docker engine sau khi cài 
+- Kiểm tra hoạt động của docker engine sau khi cài
 
 ```sh
 systemctl status docker.service
@@ -184,56 +183,58 @@ cat <<EOF> /etc/docker/daemon.json
 EOF
 ```
 
-- Khởi động lại docker engine 
+- Khởi động lại docker engine
 
 ```sh
-systemctl restart docker 
+systemctl restart docker
 ```
 
 ### Cấu hình docker swarm
+
 - Đứng trên node master thực hiện lệnh dưới để thiết lập docker swarm
 
-    ```sh
-    docker swarm init --advertise-addr eth1
-    ```
+  ```sh
+  docker swarm init --advertise-addr eth1
+  ```
+
 - Trong đó:
+
   - Nếu có nhiều NICs thì cần chỉ định thêm tùy chọn `--advertise-addr` để chỉ ra tên của interfaces mà docker swarm sẽ dùng, các node worker sẽ dùng IP này để join vào cluster.
 
   - Kết quả của lệnh trên như bên dưới, lưu ý dòng thông báo trong kết quả nhé. Dòng này để sử dụng trên các node worker.
 
-      ```sh
-      [root@masternode ~]# docker swarm init --advertise-addr eth1
-      Swarm initialized: current node (yio0waboc34i8xqh86zt2rdat) is now a manager.
-
-      To add a worker to this swarm, run the following command:
-
-          docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
-
-      To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
-
-      [root@masternode ~]#
-      ```
-
-  
-- Đứng trên node `worker1` và `worker2` để join vào node master. Thực hiện cả trên 02 node worker còn lại.
-
     ```sh
-    docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
+    [root@masternode ~]# docker swarm init --advertise-addr eth1
+    Swarm initialized: current node (yio0waboc34i8xqh86zt2rdat) is now a manager.
+
+    To add a worker to this swarm, run the following command:
+
+        docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
+
+    To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+    [root@masternode ~]#
     ```
 
-- Kết quả sẽ có thông báo như sau: 
+- Đứng trên node `worker1` và `worker2` để join vào node master. Thực hiện cả trên 02 node worker còn lại.
+
+  ```sh
+  docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
+  ```
+
+- Kết quả sẽ có thông báo như sau:
 
   ```sh
   [root@worker1node ~]# docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
   This node joined a swarm as a worker.
   ```
-  
+
 - Đứng trên node master thực hiện lệnh `docker node ls` để kiểm tra xem các node worker đã join hay chưa. Nếu chưa ổn thì kiểm tra kỹ lại các bước ở trên.
 
   ```sh
   docker node ls
   ```
-  
+
   - Kết quả
 
     ```sh
@@ -244,7 +245,7 @@ systemctl restart docker
     kesl0xhuj9w6yl84og4x2sd3y     worker2node         Ready               Active
     [root@masternode ~]#
     ```
-    
+
 ### Kiểm tra hoạt động của cụm docker swarm vừa dựng.
 
 - Tạo file `Dockerfile` với nội dung bên dưới trên tất cả các node. Ở đây tôi sẽ tạo ra một images chạy web server, lưu ý, tôi sẽ tạo các nội dung các web server khác nhau với 03 node để khi kiểm tra sẽ thấy các kết quả của container trên từng node.
@@ -276,7 +277,7 @@ systemctl restart docker
   ENTRYPOINT ["/usr/sbin/httpd"]
   EOF
   ```
-  
+
 - Trên node worker2
 
   ```sh
@@ -291,20 +292,20 @@ systemctl restart docker
   EOF
   ```
 
-  
 - Thực hiện build image với dockerfile vừa tạo ở trên trên cả 03 node (lưu ý dấu . nhé, lúc này đang đứng tại thư mục `root`)
 
   ```sh
-  docker build -t web_server:latest . 
+  docker build -t web_server:latest .
   ```
-  
+
 - Kiểm tra images sau khi build xong dockerfile ở trên
 
   ```sh
   docker images
   ```
+
   - Kết quả:
-  
+
     ```sh
     Complete!
     Removing intermediate container ac34ac2bf2bf
@@ -328,15 +329,15 @@ systemctl restart docker
     Successfully built bbc76a4873a4
     Successfully tagged web_server:latest
     ```
-  
+
 - Tạo container từ image ở trên với số lượng bản sao là 03. Lúc này đứng trên node master thực hiện các lệnh dưới.
 
   ```sh
-  docker service create --name swarm_cluster --replicas=3 -p 80:80 web_server:latest 
+  docker service create --name swarm_cluster --replicas=3 -p 80:80 web_server:latest
   ```
 
   - Kết quả như sau:
-    
+
     ```sh
     [root@masternode ~]# docker service create --name swarm_cluster --replicas=3 -p 80:80 web_server:latest
     image web_server:latest could not be accessed on a registry to record
@@ -352,7 +353,7 @@ systemctl restart docker
     verify: Service converged
     ```
 
-- Kiểm tra lại kết quả bằng lệnh `docker service ls` 
+- Kiểm tra lại kết quả bằng lệnh `docker service ls`
 
   ```sh
   [root@masternode ~]# docker service ls
@@ -361,14 +362,14 @@ systemctl restart docker
   [root@masternode ~]#
   ```
 
-- Kiểm tra sâu hơn bên trong của cluster 
+- Kiểm tra sâu hơn bên trong của cluster
 
   ```sh
-  docker service inspect swarm_cluster --pretty 
+  docker service inspect swarm_cluster --pretty
   ```
-  
+
   - Kết quả
-  
+
     ```sh
     [root@masternode ~]# docker service inspect swarm_cluster --pretty
     [root@masternode ~]#   docker service inspect swarm_cluster --pretty
@@ -417,43 +418,46 @@ systemctl restart docker
 
 - Có thể kiểm tra các container trên từng node bằng lệnh `docker ps`, kết quả là thực hiện kiểm tra trên `worker1` và `worker2`
 
-    ```sh
-    [root@worker1node ~]# docker ps
-    CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS               NAMES
-    a136bedc42b7        web_server:latest   "/usr/sbin/httpd -D …"   About a minute ago   Up About a minute   80/tcp              swarm_cluster.1.op3x52jzqmir3o0dawz7hn4tn
-    ```
-    
-    ```sh
-    [root@worker2node ~]# docker ps
-    CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
-    143f360db9ca        web_server:latest   "/usr/sbin/httpd -D …"   3 minutes ago       Up 3 minutes        80/tcp              swarm_cluster.2.trm5frr8hqaw1z14m18fm3g3c
-    ```
-    
-- Thử thay đổi số lượng container bằng lệnh. Lúc này container sẽ được tăng lên. 
+  ```sh
+  [root@worker1node ~]# docker ps
+  CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS               NAMES
+  a136bedc42b7        web_server:latest   "/usr/sbin/httpd -D …"   About a minute ago   Up About a minute   80/tcp              swarm_cluster.1.op3x52jzqmir3o0dawz7hn4tn
+  ```
+
+  ```sh
+  [root@worker2node ~]# docker ps
+  CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+  143f360db9ca        web_server:latest   "/usr/sbin/httpd -D …"   3 minutes ago       Up 3 minutes        80/tcp              swarm_cluster.2.trm5frr8hqaw1z14m18fm3g3c
+  ```
+
+- Thử thay đổi số lượng container bằng lệnh. Lúc này container sẽ được tăng lên.
 
   ```sh
   docker service scale swarm_cluster=4
   ```
-  
+
   - Kiểm tra lại bằng lệnh `docker service ps swarm_cluster`
   - Khi tắt thử các container trên một trong các node, sẽ có container mới được sinh ra để đảm bảo số container đúng với thiết lập.
 
 <a name="2">Cài đặt Docker Swarm trên Ubuntu Server 16.04 64</a>
-# Hướng dẫn cài đặt docker swarm trên Ubuntu Server 16.04 64 bit 
+
+# Hướng dẫn cài đặt docker swarm trên Ubuntu Server 16.04 64 bit
+
 ## Chuẩn bị
-- 03 máy server 
 
+- 03 máy server
 
-## Các bước cài đặt   
+## Các bước cài đặt
 
-### Đặt IP cho từng máy 
+### Đặt IP cho từng máy
 
 #### Thực hiện trên máy docker-swarm master
-- Đặt hostname 
 
-	```sh
-	hostnamectl set-hostname swarm-master
-	```
+- Đặt hostname
+
+  ```sh
+  hostnamectl set-hostname swarm-master
+  ```
 
 - Đặt IP cho máy master `swarm-master`. Node này đóng vai trò master
 
@@ -482,22 +486,22 @@ systemctl restart docker
 
 - Khai báo file `/ect/hosts`
 
-	```sh
-	cat << EOF > /etc/hosts/
-	127.0.0.1       localhost swarm-master
-	172.16.68.152 swarm-master
-	172.16.68.153 swarm-worker1
-	172.16.68.154 swarm-worker2
-	EOF
-	```
-	
+  ```sh
+  cat << EOF > /etc/hosts/
+  127.0.0.1       localhost swarm-master
+  172.16.68.152 swarm-master
+  172.16.68.153 swarm-worker1
+  172.16.68.154 swarm-worker2
+  EOF
+  ```
+
 #### Thực hiện trên máy `docker-swarm worker1`
 
-- Đặt hostname 
+- Đặt hostname
 
-	```sh
-	hostnamectl set-hostname swarm-worker1
-	```
+  ```sh
+  hostnamectl set-hostname swarm-worker1
+  ```
 
 - Đặt IP cho máy master `swarm-worker1`. Node này đóng vai trò worker
 
@@ -526,23 +530,23 @@ systemctl restart docker
 
 - Khai báo file `/ect/hosts`
 
-	```sh
-	cat << EOF > /etc/hosts/
-	127.0.0.1       localhost swarm-worker1
-	172.16.68.152 swarm-master
-	172.16.68.153 swarm-worker1
-	172.16.68.154 swarm-worker2
-	EOF
-	```
+  ```sh
+  cat << EOF > /etc/hosts/
+  127.0.0.1       localhost swarm-worker1
+  172.16.68.152 swarm-master
+  172.16.68.153 swarm-worker1
+  172.16.68.154 swarm-worker2
+  EOF
+  ```
 
 #### Thực hiện trên máy `docker-swarm worker2`
 
-- Đặt hostname 
+- Đặt hostname
 
-	```sh
-	hostnamectl set-hostname swarm-worker2
-	```
-	
+  ```sh
+  hostnamectl set-hostname swarm-worker2
+  ```
+
 - Đặt IP cho máy master `swarm-worker2`. Node này đóng vai trò worker
 
   ```sh
@@ -567,58 +571,64 @@ systemctl restart docker
   dns-nameservers 8.8.8.8
   EOF
   ```
-	
+
 - Khai báo file `/ect/hosts`
 
-	```sh
-	cat << EOF > /etc/hosts/
-	127.0.0.1       localhost swarm-worker2
-	172.16.68.152 swarm-master
-	172.16.68.153 swarm-worker1
-	172.16.68.154 swarm-worker2
-	EOF
-	```
-	
-### Cài đặt các thành phần của docker 
+  ```sh
+  cat << EOF > /etc/hosts/
+  127.0.0.1       localhost swarm-worker2
+  172.16.68.152 swarm-master
+  172.16.68.153 swarm-worker1
+  172.16.68.154 swarm-worker2
+  EOF
+  ```
+
+### Cài đặt các thành phần của docker
+
 Lưu ý: cài lên tất cả các node
 
 #### Cài đặt docker engine
+
 - Cài đặt docker engine
+
   ```sh
-  su - 
-	
-	apt-get  -y update
+  su -
+
+  apt-get  -y update
 
   curl -sSL https://get.docker.com/ | sudo sh
   ```
- 
-- Phân quyền  
+
+- Phân quyền
+
   ```sh
   sudo usermod -aG docker `whoami`
   ```
 
-- Khởi động lại service 
-  ```sh 
+- Khởi động lại service
+
+  ```sh
   systemctl start docker.service
 
   systemctl enable docker.service
   ```
-  
-- Kiểm tra trạng thái của docker 
+
+- Kiểm tra trạng thái của docker
   ```sh
   systemctl status docker.service
   ```
-  
-- Kiểm tra lại phiên bản của docker 
+- Kiểm tra lại phiên bản của docker
 
   ```sh
   docker version
-  ```  
+  ```
 
-#### Cài đặt `docker compose`  
+#### Cài đặt `docker compose`
+
 Lưu ý: cài lên tất cả các node
 
 - Cài đặt `docker compose`
+
   ```sh
   sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
   ```
@@ -627,16 +637,16 @@ Lưu ý: cài lên tất cả các node
   sudo chmod +x /usr/local/bin/docker-compose
   ```
 
-- Kiểm tra phiên bản của `docker-compose`  
+- Kiểm tra phiên bản của `docker-compose`
   ```sh
-  docker-compose --version
+  docker compose --version
   ```
 
 ## Thực hiện cài đặt docker swarm_cluster
 
 ### Thiết lập docker swarm
-- Đứng trên node có vai trò là master (manager) để thiết lập swarm, trong ví dụ này là node có tên `cicd1`
 
+- Đứng trên node có vai trò là master (manager) để thiết lập swarm, trong ví dụ này là node có tên `cicd1`
 
 ```sh
 docker swarm init --advertise-addr 172.16.68.152
@@ -644,7 +654,7 @@ docker swarm init --advertise-addr 172.16.68.152
 
 - Trong đó:
   - `172.16.68.152`: là IP của node `master` (chính là node `cicd1`)
-  
+
 Sau khi chạy lệnh trên, màn hình sẽ trả về kết quả và hướng dẫn các thao tác để join các node còn lại vào cụm docker swarm. Sử dụng lệnh trên màn hình trả về để thao tác trên 02 node `cicd2` và `cicd3` còn lại.
 
 Join các node `cicd2` và `cicd3` vào cụm cluster.
@@ -653,13 +663,14 @@ Join các node `cicd2` và `cicd3` vào cụm cluster.
   ```sh
   docker swarm join --token SWMTKN-1-3ibshsl050pg7op2i6ychyeoiqlv4qnvqcdvrpfiis9tiw5qb1-3lheft3zx76q68oj3n3dp20kn 172.16.68.152:2377
   ```
-  
 - Đứng trên các node `cicd3`
+
   ```sh
   docker swarm join --token SWMTKN-1-3ibshsl050pg7op2i6ychyeoiqlv4qnvqcdvrpfiis9tiw5qb1-3lheft3zx76q68oj3n3dp20kn 172.16.68.152:2377
   ```
 
 - Kết quả trả về như dưới là ok:
+
   ```sh
   This node joined a swarm as a worker.
   ```
@@ -669,8 +680,9 @@ Join các node `cicd2` và `cicd3` vào cụm cluster.
   ```sh
   docker node ls
   ```
-  - Kết quả trả về như dưới là thành công  
-    ```sh  
+
+  - Kết quả trả về như dưới là thành công
+    ```sh
     ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
     paicdiqjm1yxv2jr0wqg5vcqq *   cicd1               Ready               Active              Leader
     ep01sgz4qsasnctzc7hmmwzzs     cicd2               Ready               Active
@@ -683,16 +695,16 @@ Join các node `cicd2` và `cicd3` vào cụm cluster.
 
 Mặc định thì tất cả các node trong cụm cluster khi tham gia vào docker-swarm sẽ có khả năng tạo các container, kể cả node master. Do vậy, nếu muốn node master chỉ thực hiện chức năng chuyên điều khiển cụm cluster thì ta thực hiện lệnh dưới để không cho phép tạo container khi triển khai các ứng dụng trên node master.
 
-	```sh
-	docker node update --availability drain swarm-master
-	```
+    ```sh
+    docker node update --availability drain swarm-master
+    ```
 
 - Kiểm tra lại trạng thái bằng lệnh, ta sẽ thấy cột `AVAILABILITY` là `Drain` đối với node master. Tham khảo kết quả trước và sau: http://prntscr.com/jk86i3
 
-	```sh
-	docker node ls
-	```
-   
+  ```sh
+  docker node ls
+  ```
+
 ### Kiểm tra hoạt động của docker swarm cluster.
 
 Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động cơ bản của chúng. Các bước thực hiện này sẽ làm tại node master. Có các thao tác kiểm tra như sau:
@@ -702,7 +714,7 @@ Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động
   ```sh
   docker service ls
   ```
-  
+
 - Tạo service chạy web nginx với số lượng nhân bản là 02.
 
   ```sh
@@ -723,7 +735,7 @@ Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động
 
 - Tham số `--publish 8080:80` có nghĩa là ta sẽ sử dụng port 8080 để truy câp vào web, docker sẽ forward vào port 80 bên trong container.
 
-  ```sh 
+  ```sh
   http://172.16.68.152:8080
   http://172.16.68.153:8080
   http://172.16.68.154:8080
@@ -731,14 +743,13 @@ Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động
 
 - Tới bước này ta có thể sử dụng IP của các máy `cicd1` hoặc `cicd2` hoặc `cicd3` với port 8080 để truy cập vào container vừa được tạo ở trên.
 
-- Ta có thể kiểm tra lại service bằng lệnh 
+- Ta có thể kiểm tra lại service bằng lệnh
 
   ```sh
   docker service ls
   ```
-  
+
   - Kết quả như sau
-      
     ```sh
     root@cicd1:~# docker service ls
     ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
@@ -751,8 +762,9 @@ Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động
   ```sh
   docker service ps my-web
   ```
+
   - Kết quả như dưới (quan sát kết quả để biết thêm các tham số)
-  
+
     ```sh
     root@cicd1:~#  docker service ps my-web
     ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE           ERROR               PO                   RTS
@@ -760,20 +772,20 @@ Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động
     dqh0e6w2y7kz        my-web.2            nginx:latest        cicd1               Running             Running 7 minutes ago
     ```
 
-
-
 # Hướng dẫn cài đặt Docker Swarm
 
 - [Cài đặt Docker Swarm trên CentOS 7](#1)
 - [Cài đặt Docker Swarm trên Ubuntu Server 16.04 64](#2)
 
 <a name="1">Cài đặt Docker Swarm trên CentOS 7</a>
+
 ## Môi trường LAB
+
 - 03 node cài CentOS7: 01 node master và 02 node worker
+
 ### Mô hình
 
 ### Phân hoạch IP
-
 
 ## Setup hostname và IP theo phân hoạch ip
 
@@ -818,7 +830,6 @@ sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 ```
 
-
 ### Thiết lập trên node worker1
 
 - Khai báo hostname
@@ -858,8 +869,6 @@ sudo systemctl start network
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 ```
-
-
 
 ### Thiết lập trên node worker2
 
@@ -908,12 +917,12 @@ sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 - Cài đặt docker engine và chuẩn bị để sẵn sàng cấu hình docker swarm trên cả 03 node.
 
 ```sh
-su - 
+su -
 
 curl -sSL https://get.docker.com/ | sudo sh
 ```
 
-- Phân quyền cho user để sử dụng docker 
+- Phân quyền cho user để sử dụng docker
 
 ```sh
 sudo usermod -aG docker `whoami`
@@ -932,7 +941,7 @@ systemctl enable docker.service
 docker version
 ```
 
-- Kiểm tra hoạt động của docker engine sau khi cài 
+- Kiểm tra hoạt động của docker engine sau khi cài
 
 ```sh
 systemctl status docker.service
@@ -948,56 +957,58 @@ cat <<EOF> /etc/docker/daemon.json
 EOF
 ```
 
-- Khởi động lại docker engine 
+- Khởi động lại docker engine
 
 ```sh
-systemctl restart docker 
+systemctl restart docker
 ```
 
 ### Cấu hình docker swarm
+
 - Đứng trên node master thực hiện lệnh dưới để thiết lập docker swarm
 
-    ```sh
-    docker swarm init --advertise-addr eth1
-    ```
+  ```sh
+  docker swarm init --advertise-addr eth1
+  ```
+
 - Trong đó:
+
   - Nếu có nhiều NICs thì cần chỉ định thêm tùy chọn `--advertise-addr` để chỉ ra tên của interfaces mà docker swarm sẽ dùng, các node worker sẽ dùng IP này để join vào cluster.
 
   - Kết quả của lệnh trên như bên dưới, lưu ý dòng thông báo trong kết quả nhé. Dòng này để sử dụng trên các node worker.
 
-      ```sh
-      [root@masternode ~]# docker swarm init --advertise-addr eth1
-      Swarm initialized: current node (yio0waboc34i8xqh86zt2rdat) is now a manager.
-
-      To add a worker to this swarm, run the following command:
-
-          docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
-
-      To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
-
-      [root@masternode ~]#
-      ```
-
-  
-- Đứng trên node `worker1` và `worker2` để join vào node master. Thực hiện cả trên 02 node worker còn lại.
-
     ```sh
-    docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
+    [root@masternode ~]# docker swarm init --advertise-addr eth1
+    Swarm initialized: current node (yio0waboc34i8xqh86zt2rdat) is now a manager.
+
+    To add a worker to this swarm, run the following command:
+
+        docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
+
+    To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+
+    [root@masternode ~]#
     ```
 
-- Kết quả sẽ có thông báo như sau: 
+- Đứng trên node `worker1` và `worker2` để join vào node master. Thực hiện cả trên 02 node worker còn lại.
+
+  ```sh
+  docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
+  ```
+
+- Kết quả sẽ có thông báo như sau:
 
   ```sh
   [root@worker1node ~]# docker swarm join --token SWMTKN-1-1w88l3qp3q5312lvf6nvkscuky03f99iwd4u6wighokzy4xomf-1io10gmxni8pmdajsof1gqy41 172.16.68.221:2377
   This node joined a swarm as a worker.
   ```
-  
+
 - Đứng trên node master thực hiện lệnh `docker node ls` để kiểm tra xem các node worker đã join hay chưa. Nếu chưa ổn thì kiểm tra kỹ lại các bước ở trên.
 
   ```sh
   docker node ls
   ```
-  
+
   - Kết quả
 
     ```sh
@@ -1008,7 +1019,7 @@ systemctl restart docker
     kesl0xhuj9w6yl84og4x2sd3y     worker2node         Ready               Active
     [root@masternode ~]#
     ```
-    
+
 ### Kiểm tra hoạt động của cụm docker swarm vừa dựng.
 
 - Tạo file `Dockerfile` với nội dung bên dưới trên tất cả các node. Ở đây tôi sẽ tạo ra một images chạy web server, lưu ý, tôi sẽ tạo các nội dung các web server khác nhau với 03 node để khi kiểm tra sẽ thấy các kết quả của container trên từng node.
@@ -1040,7 +1051,7 @@ systemctl restart docker
   ENTRYPOINT ["/usr/sbin/httpd"]
   EOF
   ```
-  
+
 - Trên node worker2
 
   ```sh
@@ -1055,20 +1066,20 @@ systemctl restart docker
   EOF
   ```
 
-  
 - Thực hiện build image với dockerfile vừa tạo ở trên trên cả 03 node (lưu ý dấu . nhé, lúc này đang đứng tại thư mục `root`)
 
   ```sh
-  docker build -t web_server:latest . 
+  docker build -t web_server:latest .
   ```
-  
+
 - Kiểm tra images sau khi build xong dockerfile ở trên
 
   ```sh
   docker images
   ```
+
   - Kết quả:
-  
+
     ```sh
     Complete!
     Removing intermediate container ac34ac2bf2bf
@@ -1092,15 +1103,15 @@ systemctl restart docker
     Successfully built bbc76a4873a4
     Successfully tagged web_server:latest
     ```
-  
+
 - Tạo container từ image ở trên với số lượng bản sao là 03. Lúc này đứng trên node master thực hiện các lệnh dưới.
 
   ```sh
-  docker service create --name swarm_cluster --replicas=3 -p 80:80 web_server:latest 
+  docker service create --name swarm_cluster --replicas=3 -p 80:80 web_server:latest
   ```
 
   - Kết quả như sau:
-    
+
     ```sh
     [root@masternode ~]# docker service create --name swarm_cluster --replicas=3 -p 80:80 web_server:latest
     image web_server:latest could not be accessed on a registry to record
@@ -1116,7 +1127,7 @@ systemctl restart docker
     verify: Service converged
     ```
 
-- Kiểm tra lại kết quả bằng lệnh `docker service ls` 
+- Kiểm tra lại kết quả bằng lệnh `docker service ls`
 
   ```sh
   [root@masternode ~]# docker service ls
@@ -1125,14 +1136,14 @@ systemctl restart docker
   [root@masternode ~]#
   ```
 
-- Kiểm tra sâu hơn bên trong của cluster 
+- Kiểm tra sâu hơn bên trong của cluster
 
   ```sh
-  docker service inspect swarm_cluster --pretty 
+  docker service inspect swarm_cluster --pretty
   ```
-  
+
   - Kết quả
-  
+
     ```sh
     [root@masternode ~]# docker service inspect swarm_cluster --pretty
     [root@masternode ~]#   docker service inspect swarm_cluster --pretty
@@ -1181,36 +1192,38 @@ systemctl restart docker
 
 - Có thể kiểm tra các container trên từng node bằng lệnh `docker ps`, kết quả là thực hiện kiểm tra trên `worker1` và `worker2`
 
-    ```sh
-    [root@worker1node ~]# docker ps
-    CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS               NAMES
-    a136bedc42b7        web_server:latest   "/usr/sbin/httpd -D …"   About a minute ago   Up About a minute   80/tcp              swarm_cluster.1.op3x52jzqmir3o0dawz7hn4tn
-    ```
-    
-    ```sh
-    [root@worker2node ~]# docker ps
-    CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
-    143f360db9ca        web_server:latest   "/usr/sbin/httpd -D …"   3 minutes ago       Up 3 minutes        80/tcp              swarm_cluster.2.trm5frr8hqaw1z14m18fm3g3c
-    ```
-    
-- Thử thay đổi số lượng container bằng lệnh. Lúc này container sẽ được tăng lên. 
+  ```sh
+  [root@worker1node ~]# docker ps
+  CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS               NAMES
+  a136bedc42b7        web_server:latest   "/usr/sbin/httpd -D …"   About a minute ago   Up About a minute   80/tcp              swarm_cluster.1.op3x52jzqmir3o0dawz7hn4tn
+  ```
+
+  ```sh
+  [root@worker2node ~]# docker ps
+  CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+  143f360db9ca        web_server:latest   "/usr/sbin/httpd -D …"   3 minutes ago       Up 3 minutes        80/tcp              swarm_cluster.2.trm5frr8hqaw1z14m18fm3g3c
+  ```
+
+- Thử thay đổi số lượng container bằng lệnh. Lúc này container sẽ được tăng lên.
 
   ```sh
   docker service scale swarm_cluster=4
   ```
-  
+
   - Kiểm tra lại bằng lệnh `docker service ps swarm_cluster`
   - Khi tắt thử các container trên một trong các node, sẽ có container mới được sinh ra để đảm bảo số container đúng với thiết lập.
 
 <a name="2">Cài đặt Docker Swarm trên Ubuntu Server 16.04 64</a>
-# Hướng dẫn cài đặt docker swarm trên Ubuntu Server 16.04 64 bit 
+
+# Hướng dẫn cài đặt docker swarm trên Ubuntu Server 16.04 64 bit
+
 ## Chuẩn bị
-- 03 máy server 
 
+- 03 máy server
 
-## Các bước cài đặt   
+## Các bước cài đặt
 
-### Đặt IP cho từng máy 
+### Đặt IP cho từng máy
 
 - Đặt IP cho máy master `cicd1`. Node này đóng vai trò master
 
@@ -1287,44 +1300,50 @@ systemctl restart docker
   EOF
   ```
 
-### Cài đặt các thành phần của docker 
+### Cài đặt các thành phần của docker
+
 Lưu ý: cài lên tất cả các node
 
 #### Cài đặt docker engine
+
 - Cài đặt docker engine
+
   ```sh
-  su - 
+  su -
 
   curl -sSL https://get.docker.com/ | sudo sh
   ```
- 
-- Phân quyền  
+
+- Phân quyền
+
   ```sh
   sudo usermod -aG docker `whoami`
   ```
 
-- Khởi động lại service 
-  ```sh 
+- Khởi động lại service
+
+  ```sh
   systemctl start docker.service
 
   systemctl enable docker.service
   ```
-  
-- Kiểm tra trạng thái của docker 
+
+- Kiểm tra trạng thái của docker
   ```sh
   systemctl status docker.service
   ```
-  
-- Kiểm tra lại phiên bản của docker 
+- Kiểm tra lại phiên bản của docker
 
   ```sh
   docker version
-  ```  
+  ```
 
-#### Cài đặt `docker compose`  
+#### Cài đặt `docker compose`
+
 Lưu ý: cài lên tất cả các node
 
 - Cài đặt `docker compose`
+
   ```sh
   sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
   ```
@@ -1333,16 +1352,16 @@ Lưu ý: cài lên tất cả các node
   sudo chmod +x /usr/local/bin/docker-compose
   ```
 
-- Kiểm tra phiên bản của `docker-compose`  
+- Kiểm tra phiên bản của `docker-compose`
   ```sh
-  docker-compose --version
+  docker compose --version
   ```
 
 ## Thực hiện cài đặt docker swarm_cluster
 
 ### Thiết lập docker swarm
-- Đứng trên node có vai trò là master (manager) để thiết lập swarm, trong ví dụ này là node có tên `cicd1`
 
+- Đứng trên node có vai trò là master (manager) để thiết lập swarm, trong ví dụ này là node có tên `cicd1`
 
 ```sh
 docker swarm init --advertise-addr 172.16.68.152
@@ -1350,7 +1369,7 @@ docker swarm init --advertise-addr 172.16.68.152
 
 - Trong đó:
   - `172.16.68.152`: là IP của node `master` (chính là node `cicd1`)
-  
+
 Sau khi chạy lệnh trên, màn hình sẽ trả về kết quả và hướng dẫn các thao tác để join các node còn lại vào cụm docker swarm. Sử dụng lệnh trên màn hình trả về để thao tác trên 02 node `cicd2` và `cicd3` còn lại.
 
 Join các node `cicd2` và `cicd3` vào cụm cluster.
@@ -1359,13 +1378,14 @@ Join các node `cicd2` và `cicd3` vào cụm cluster.
   ```sh
   docker swarm join --token SWMTKN-1-3ibshsl050pg7op2i6ychyeoiqlv4qnvqcdvrpfiis9tiw5qb1-3lheft3zx76q68oj3n3dp20kn 172.16.68.152:2377
   ```
-  
 - Đứng trên các node `cicd3`
+
   ```sh
   docker swarm join --token SWMTKN-1-3ibshsl050pg7op2i6ychyeoiqlv4qnvqcdvrpfiis9tiw5qb1-3lheft3zx76q68oj3n3dp20kn 172.16.68.152:2377
   ```
 
 - Kết quả trả về như dưới là ok:
+
   ```sh
   This node joined a swarm as a worker.
   ```
@@ -1375,8 +1395,9 @@ Join các node `cicd2` và `cicd3` vào cụm cluster.
   ```sh
   docker node ls
   ```
-  - Kết quả trả về như dưới là thành công  
-    ```sh  
+
+  - Kết quả trả về như dưới là thành công
+    ```sh
     ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS
     paicdiqjm1yxv2jr0wqg5vcqq *   cicd1               Ready               Active              Leader
     ep01sgz4qsasnctzc7hmmwzzs     cicd2               Ready               Active
@@ -1384,8 +1405,7 @@ Join các node `cicd2` và `cicd3` vào cụm cluster.
     root@cicd1:~#
     root@cicd1:~#
     ```
-    
-    
+
 ### Kiểm tra hoạt động của docker swarm cluster.
 
 Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động cơ bản của chúng. Các bước thực hiện này sẽ làm tại node master. Có các thao tác kiểm tra như sau:
@@ -1395,7 +1415,7 @@ Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động
   ```sh
   docker service ls
   ```
-  
+
 - Tạo service chạy web nginx với số lượng nhân bản là 02.
 
   ```sh
@@ -1416,7 +1436,7 @@ Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động
 
 - Tham số `--publish 8080:80` có nghĩa là ta sẽ sử dụng port 8080 để truy câp vào web, docker sẽ forward vào port 80 bên trong container.
 
-  ```sh 
+  ```sh
   http://172.16.68.152:8080
   http://172.16.68.153:8080
   http://172.16.68.154:8080
@@ -1424,14 +1444,13 @@ Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động
 
 - Tới bước này ta có thể sử dụng IP của các máy `cicd1` hoặc `cicd2` hoặc `cicd3` với port 8080 để truy cập vào container vừa được tạo ở trên.
 
-- Ta có thể kiểm tra lại service bằng lệnh 
+- Ta có thể kiểm tra lại service bằng lệnh
 
   ```sh
   docker service ls
   ```
-  
+
   - Kết quả như sau
-      
     ```sh
     root@cicd1:~# docker service ls
     ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
@@ -1444,8 +1463,9 @@ Sau khi cài đặt docker swarm xong, chúng ta cần kiểm tra hoạt động
   ```sh
   docker service ps my-web
   ```
+
   - Kết quả như dưới (quan sát kết quả để biết thêm các tham số)
-  
+
     ```sh
     root@cicd1:~#  docker service ps my-web
     ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE           ERROR               PO                   RTS
